@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRYPTINITY WEB4 - The Future of SocialFi</title>
+    
+    <!-- 1. Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- 2. Babel (To compile React) -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- 3. Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --neon-blue: #3b82f6;
+            --neon-purple: #a855f7;
+            --glass-bg: rgba(15, 23, 42, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #050b14; 
+            color: #e2e8f0; 
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(168, 85, 247, 0.15) 0px, transparent 50%);
+        }
+
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #050b14; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+        
+        /* HOLOGRAPHIC GLASS CLASS */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        /* ANIMATIONS */
+        .cyber-grid {
+            background-size: 50px 50px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            mask-image: radial-gradient(ellipse 60% 50% at 50% 0%, #000 70%, transparent 100%);
+        }
+        
+        .neon-glow { filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.6)); }
+        .input-glow:focus { box-shadow: 0 0 15px rgba(59, 130, 246, 0.3); border-color: rgba(59, 130, 246, 0.5); }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <!-- IMPORTANT: type="text/babel" data-type="module" allows imports to work -->
+    <script type="text/babel" data-type="module">
+        // --- MODERN IMPORTS (ESM) ---
+        import React, { useState, useEffect } from 'https://esm.sh/react@18.2.0';
+        import { createRoot } from 'https://esm.sh/react-dom@18.2.0/client';
+        import { 
+            Timer, Zap, User, MessageCircle, ShoppingBag, 
+            TrendingUp, Gamepad2, Wallet, Lock, Send, Camera, Video,
+            Share2, Heart, Cpu, Link, Copy, X, 
+            Youtube, Facebook, Twitter, Globe, ArrowRight, FileText,
+            ChevronDown, ChevronUp, Layers, Edit, Image as ImageIcon,
+            Activity, ShieldCheck, Database
+        } from 'https://esm.sh/lucide-react@0.292.0';
+
+        // --- CONFIG ---
+        const LOGO_URL = "https://img.sanishtech.com/u/737f24149e86e68ecb670a074c19c72a.png";
+        
+        const SOCIAL_LINKS = [
+            { icon: Facebook, url: "https://www.facebook.com/cryptinity", color: "hover:text-blue-500" },
+            { icon: Twitter, url: "https://www.x.com/cryptinity85164", color: "hover:text-white" },
+            { icon: Send, url: "https://t.me/cryptinitymain", color: "hover:text-blue-400" },
+            { icon: Youtube, url: "https://youtube.com/@cryptinity", color: "hover:text-red-500" },
+        ];
+
+        const NEWS = [
+            { cat: "CRYPTO", title: "Bitcoin Halving Cycle Analysis: Bull Run Imminent?" },
+            { cat: "GAME", title: "Ubisoft Announces Web4 RPG Integration" },
+            { cat: "CTY", title: "Cryptinity Foundation Locks Liquidity for 5 Years" },
+            { cat: "TECH", title: "Solana Mobile Chapter 2 Sold Out" }
+        ];
+
+        // --- COMPONENTS ---
+
+        const BackgroundFX = () => (
+          <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden bg-[#050b14]">
+            <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-600/20 rounded-full blur-[120px] animate-pulse"></div>
+            <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-600/20 rounded-full blur-[120px] animate-pulse delay-1000"></div>
+            <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
+            <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)]"></div>
+          </div>
+        );
+
+        const Countdown = () => {
+            const [time, setTime] = useState({ d: 29, h: 23, m: 59, s: 59 });
+            useEffect(() => {
+                const timer = setInterval(() => {
+                    setTime(prev => {
+                        let { d, h, m, s } = prev;
+                        s--;
+                        if (s < 0) { s = 59; m--; }
+                        if (m < 0) { m = 59; h--; }
+                        if (h < 0) { h = 23; d--; }
+                        return { d, h, m, s };
+                    });
+                }, 1000);
+                return () => clearInterval(timer);
+            }, []);
+
+            const Unit = ({ val, label }) => (
+                <div className="flex flex-col items-center justify-center w-16 sm:w-20 p-2 rounded-xl border border-blue-500/20 bg-black/40 backdrop-blur-md relative overflow-hidden group">
+                    <div className="absolute inset-0 bg-blue-600/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <span className="text-xl sm:text-3xl font-black text-white font-mono tracking-tighter relative z-10">{String(val).padStart(2, '0')}</span>
+                    <span className="text-[9px] text-blue-400 uppercase tracking-widest font-bold relative z-10">{label}</span>
+                </div>
+            );
+
+            return (
+                <div className="flex justify-center gap-3 sm:gap-4 my-8 animate-pulse">
+                    <Unit val={time.d} label="DAY" />
+                    <Unit val={time.h} label="HR" />
+                    <Unit val={time.m} label="MIN" />
+                    <Unit val={time.s} label="SEC" />
+                </div>
+            );
+        };
+
+        const WhitepaperModule = () => {
+            const [isOpen, setIsOpen] = useState(false);
+            return (
+                <div className="w-full glass-panel rounded-2xl overflow-hidden mb-8 border-l-4 border-l-blue-500 transition-all duration-500">
+                    <button 
+                        onClick={() => setIsOpen(!isOpen)} 
+                        className="w-full p-5 flex justify-between items-center bg-white/5 hover:bg-white/10 transition-colors group"
+                    >
+                        <div className="flex items-center gap-4">
+                            <div className="w-10 h-10 rounded-lg bg-blue-900/50 flex items-center justify-center border border-blue-500/30 group-hover:border-blue-400 transition-colors">
+                                <FileText className="text-blue-400 group-hover:text-white transition-colors" size={20}/>
+                            </div>
+                            <div className="text-left">
+                                <h3 className="text-white font-bold text-lg group-hover:text-blue-200 transition-colors">Official Web4 Whitepaper</h3>
+                                <p className="text-xs text-gray-400">Mission, Vision & Tokenomics</p>
+                            </div>
+                        </div>
+                        {isOpen ? <ChevronUp className="text-blue-400"/> : <ChevronDown className="text-gray-500"/>}
+                    </button>
+                    
+                    {isOpen && (
+                        <div className="p-6 text-gray-300 space-y-6 border-t border-white/5 text-sm leading-relaxed">
+                            <div className="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <h4 className="text-white font-bold uppercase mb-2 text-xs tracking-widest border-b border-white/10 pb-1 flex items-center gap-2">
+                                        <Layers size={12} className="text-blue-500"/> Mission & Vision
+                                    </h4>
+                                    <p className="text-xs text-gray-400">
+                                        To build the "Infinite Loop" of the digital economy. We envision <b>CRYPTINITY</b> as the operating system for Web4, where the blockchain is invisible, and human potential is limitless.
+                                    </p>
+                                </div>
+                                <div>
+                                    <h4 className="text-white font-bold uppercase mb-2 text-xs tracking-widest border-b border-white/10 pb-1 flex items-center gap-2">
+                                        <ShieldCheck size={12} className="text-green-500"/> The Solution
+                                    </h4>
+                                    <p className="text-xs text-gray-400">
+                                        We unify the fragmented internet by merging Social Media (Feed), Finance (Trade), and Commerce (Mall) into one Super App using a single digital identity.
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div className="bg-black/40 p-4 rounded-xl border border-dashed border-gray-700">
+                                <h4 className="text-white font-bold uppercase mb-3 text-xs tracking-widest text-center">Core Pillars</h4>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="text-center">
+                                        <span className="text-green-400 font-bold block mb-1 text-xs">CTY Token</span>
+                                        <span className="text-[10px] text-gray-500">Deflationary utility token used for Gas, Tipping, and Mall Purchases.</span>
+                                    </div>
+                                    <div className="text-center">
+                                        <span className="text-blue-400 font-bold block mb-1 text-xs">Cloud Mining</span>
+                                        <span className="text-[10px] text-gray-500">Gamified liquidity provision that rewards users for engagement.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const UserProfile = ({ address }) => {
+            const [profile, setProfile] = useState(() => {
+                try {
+                    const saved = localStorage.getItem('cty_profile');
+                    return saved ? JSON.parse(saved) : { name: "Web4 Citizen", tagline: "Early Adopter", bgUrl: "" };
+                } catch(e) { return { name: "Web4 Citizen", tagline: "Early Adopter", bgUrl: "" }; }
+            });
+            
+            const [isEditing, setIsEditing] = useState(false);
+            const [posts, setPosts] = useState([
+                { id: 1, user: "Admin", text: "Welcome to the Pre-Launch! Mining is live.", time: "Pinned", likes: 884 }
+            ]);
+            const [input, setInput] = useState("");
+
+            const saveProfile = () => {
+                localStorage.setItem('cty_profile', JSON.stringify(profile));
+                setIsEditing(false);
+            };
+
+            const addPost = () => {
+                if (!input) return;
+                setPosts([{ id: Date.now(), user: profile.name, text: input, time: "Just now", likes: 0 }, ...posts]);
+                setInput("");
+            };
+
+            return (
+                <div 
+                    className="h-full glass-panel rounded-3xl overflow-hidden flex flex-col relative transition-all duration-500 shadow-2xl"
+                    style={{
+                        backgroundImage: profile.bgUrl ? `url(${profile.bgUrl})` : 'none',
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center'
+                    }}
+                >
+                    {profile.bgUrl && <div className="absolute inset-0 bg-black/70 backdrop-blur-[2px] z-0"></div>}
+
+                    <div className="relative z-10 p-6 flex-1 flex flex-col">
+                        <div className="flex items-start justify-between mb-6">
+                            <div className="flex items-center gap-4">
+                                <div className="w-16 h-16 rounded-full p-[2px] bg-gradient-to-r from-blue-500 to-purple-500 shadow-[0_0_15px_rgba(59,130,246,0.5)]">
+                                    <div className="w-full h-full bg-black rounded-full flex items-center justify-center overflow-hidden">
+                                        <User size={32} className="text-white"/>
+                                    </div>
+                                </div>
+                                <div className="flex-1">
+                                    {isEditing ? (
+                                        <div className="flex flex-col gap-2 animate-in fade-in">
+                                            <input 
+                                                value={profile.name} 
+                                                onChange={e => setProfile({...profile, name: e.target.value})}
+                                                className="bg-white/10 border border-white/20 rounded px-2 py-1 text-white text-sm outline-none focus:border-blue-500 w-full input-glow"
+                                                placeholder="Display Name"
+                                            />
+                                            <input 
+                                                value={profile.tagline} 
+                                                onChange={e => setProfile({...profile, tagline: e.target.value})}
+                                                className="bg-white/10 border border-white/20 rounded px-2 py-1 text-white text-xs outline-none focus:border-blue-500 w-full input-glow"
+                                                placeholder="Tagline"
+                                            />
+                                        </div>
+                                    ) : (
+                                        <>
+                                            <div className="text-white font-bold text-lg">{profile.name}</div>
+                                            <div className="text-gray-400 text-xs">{profile.tagline}</div>
+                                            <div className="text-blue-500 text-[10px] font-mono mt-1 flex items-center gap-1">
+                                                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div> {address}
+                                            </div>
+                                        </>
+                                    )}
+                                </div>
+                            </div>
+                            <button 
+                                onClick={() => isEditing ? saveProfile() : setIsEditing(true)}
+                                className="bg-white/10 hover:bg-white/20 p-2 rounded-full text-white transition-colors backdrop-blur-md border border-white/10"
+                            >
+                                {isEditing ? <div className="text-xs font-bold px-2 text-green-400">SAVE</div> : <Edit size={16}/>}
+                            </button>
+                        </div>
+
+                        {isEditing && (
+                            <div className="mb-4 bg-black/60 p-4 rounded-xl border border-dashed border-gray-600 animate-in slide-in-from-top-2">
+                                <label className="text-[10px] text-gray-400 font-bold uppercase mb-2 block flex items-center gap-1">
+                                    <ImageIcon size={12}/> Web4 Profile Skin (Background URL)
+                                </label>
+                                <input 
+                                    value={profile.bgUrl}
+                                    onChange={e => setProfile({...profile, bgUrl: e.target.value})}
+                                    className="bg-transparent w-full text-xs text-white outline-none placeholder-gray-600 border-b border-gray-600 pb-1 focus:border-blue-500"
+                                    placeholder="Paste direct image link (https://...)"
+                                />
+                            </div>
+                        )}
+
+                        <div className="bg-black/30 rounded-xl p-3 mb-4 border border-white/5">
+                            <textarea 
+                                value={input}
+                                onChange={e => setInput(e.target.value)}
+                                className="w-full bg-transparent text-sm text-white placeholder-gray-500 outline-none resize-none h-12"
+                                placeholder={`What's happening, ${profile.name}?`}
+                            />
+                            <div className="flex justify-between items-center mt-2 pt-2 border-t border-white/10">
+                                <div className="flex gap-3 text-gray-500">
+                                    <button className="hover:text-blue-400 cursor-pointer transition-colors flex items-center gap-1 text-xs"><Camera size={14}/> Photo</button>
+                                    <button className="hover:text-blue-400 cursor-pointer transition-colors flex items-center gap-1 text-xs"><Video size={14}/> Video</button>
+                                </div>
+                                <button onClick={addPost} className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-1.5 rounded-lg text-xs font-bold transition-colors shadow-lg hover:shadow-blue-500/50">Post</button>
+                            </div>
+                        </div>
+
+                        <div className="flex-1 overflow-y-auto custom-scrollbar space-y-3 pr-2">
+                            {posts.map(p => (
+                                <div key={p.id} className="bg-black/40 rounded-xl p-3 border border-white/5 animate-in slide-in-from-bottom-2 hover:bg-black/50 transition-colors">
+                                    <div className="flex justify-between mb-1">
+                                        <span className="font-bold text-blue-400 text-xs">{p.user}</span>
+                                        <span className="text-[10px] text-gray-500">{p.time}</span>
+                                    </div>
+                                    <p className="text-sm text-gray-200 mb-2 leading-relaxed">{p.text}</p>
+                                    <div className="flex gap-4 text-gray-500 border-t border-white/5 pt-2 mt-2">
+                                        <span className="text-xs flex items-center gap-1 hover:text-red-500 cursor-pointer transition-colors"><Heart size={12}/> {p.likes}</span>
+                                        <span className="text-xs flex items-center gap-1 hover:text-blue-500 cursor-pointer transition-colors"><Share2 size={12}/> Share</span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const App = () => {
+            const [isConnected, setIsConnected] = useState(() => localStorage.getItem('cty_connected') === 'true');
+            const [miningBal, setMiningBal] = useState(() => parseFloat(localStorage.getItem('cty_bal')) || 0.000000);
+            const [newsIdx, setNewsIdx] = useState(0);
+
+            useEffect(() => {
+                const i = setInterval(() => {
+                    setMiningBal(p => {
+                        const n = p + 0.0000025;
+                        localStorage.setItem('cty_bal', n);
+                        return n;
+                    });
+                }, 100);
+                return () => clearInterval(i);
+            }, []);
+
+            useEffect(() => {
+                const i = setInterval(() => setNewsIdx(p => (p + 1) % NEWS.length), 4000);
+                return () => clearInterval(i);
+            }, []);
+
+            const toggleWallet = () => {
+                const newState = !isConnected;
+                setIsConnected(newState);
+                localStorage.setItem('cty_connected', newState);
+            };
+
+            const referralLink = isConnected ? `https://cryptinity-web4.world/?ref=0x71C...9A23` : "Connect Wallet to Generate";
+
+            return (
+                <div className="min-h-screen relative pb-20">
+                    
+                    <BackgroundFX />
+
+                    {/* NEWS TICKER */}
+                    <div className="relative z-50 bg-black/80 border-b border-white/10 backdrop-blur text-[10px] py-2 flex justify-center sticky top-0">
+                        <div className="flex items-center gap-3 px-4 w-full max-w-7xl">
+                            <span className="bg-red-600/90 text-white font-bold px-2 py-0.5 rounded text-[9px] flex items-center gap-1 shadow-sm animate-pulse">
+                                <Activity size={10} /> LIVE
+                            </span>
+                            <span className="text-blue-200 font-mono truncate flex-1 tracking-wide">
+                                <span className="text-gray-500 mr-2">[{NEWS[newsIdx].cat}]</span> 
+                                {NEWS[newsIdx].title}
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* NAVBAR */}
+                    <nav className="relative z-40 border-b border-white/5 bg-[#050b14]/60 backdrop-blur-md sticky top-8 transition-all duration-300">
+                        <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+                            <div className="flex items-center gap-2">
+                                <img src={LOGO_URL} className="h-8 md:h-10 w-auto neon-glow" alt="Cryptinity" />
+                            </div>
+                            {!isConnected ? (
+                                <button 
+                                    onClick={toggleWallet} 
+                                    className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-5 py-2 rounded-full text-xs flex items-center gap-2 shadow-[0_0_20px_rgba(37,99,235,0.4)] transition-all border border-blue-400 hover:scale-105"
+                                >
+                                    <Wallet size={14}/> Connect Wallet
+                                </button>
+                            ) : (
+                                <button 
+                                    onClick={toggleWallet}
+                                    className="flex items-center gap-3 bg-white/5 px-4 py-1.5 rounded-full border border-white/10 hover:border-blue-500/30 transition-colors cursor-pointer group"
+                                >
+                                    <div className="hidden md:block text-right">
+                                        <div className="text-[9px] text-gray-400 uppercase tracking-wider group-hover:text-blue-300">Web4 ID</div>
+                                        <div className="text-xs text-green-400 font-mono">0x71C...9A23</div>
+                                    </div>
+                                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 border border-white/20 shadow-inner relative">
+                                        <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-black"></div>
+                                    </div>
+                                </button>
+                            )}
+                        </div>
+                    </nav>
+
+                    {/* HERO SECTION */}
+                    <div className="relative z-10 max-w-7xl mx-auto px-4 pt-12">
+                        <div className="text-center mb-16 animate-in slide-in-from-bottom-4 duration-700">
+                            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-900/20 border border-blue-500/30 text-blue-300 text-[10px] font-bold mb-6 uppercase tracking-widest shadow-[0_0_15px_rgba(59,130,246,0.2)]">
+                                <Zap size={12} className="fill-blue-300 animate-bounce"/> Protocol Initializing
+                            </div>
+                            <h1 className="text-5xl md:text-7xl font-black text-white mb-6 tracking-tight leading-tight">
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 drop-shadow-[0_0_30px_rgba(59,130,246,0.4)]">CRYPTINITY</span><br/>
+                                WEB4 WORLD
+                            </h1>
+                            <p className="text-gray-400 max-w-xl mx-auto mb-10 text-lg">
+                                The Super App Unifying Social, Finance, and Commerce.<br/>
+                                <span className="text-white">One Identity. One Wallet. Infinite Possibilities.</span>
+                            </p>
+                            <Countdown />
+                        </div>
+
+                        {/* MAIN GRID */}
+                        <div className="grid lg:grid-cols-2 gap-8 items-start">
+                            
+                            {/* LEFT COLUMN */}
+                            <div className="space-y-8 animate-in slide-in-from-left duration-1000 delay-200">
+                                
+                                {/* MINING RIG CARD */}
+                                <div className="glass-panel rounded-3xl p-1 relative group overflow-hidden transition-all hover:border-blue-500/30">
+                                    <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                                    <div className="bg-[#0a0f1c]/90 rounded-[20px] p-6 relative">
+                                        <div className="flex justify-between items-center mb-6">
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-16 h-16 rounded-2xl bg-black border border-gray-700 flex items-center justify-center relative shadow-[inset_0_0_20px_rgba(59,130,246,0.2)]">
+                                                    <Cpu size={32} className="text-blue-500 relative z-10 animate-pulse" />
+                                                    <div className="absolute inset-0 bg-blue-500/20 blur-md"></div>
+                                                </div>
+                                                <div>
+                                                    <div className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1">Cloud Rig Status</div>
+                                                    <div className="text-green-400 text-xs font-bold flex items-center gap-1 bg-green-900/20 px-2 py-0.5 rounded border border-green-500/20 w-fit">
+                                                        <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span> Active (5.0 MH/s)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="text-right">
+                                                <div className="text-[10px] text-gray-500 uppercase mb-1">Unclaimed Balance</div>
+                                                <div className="text-3xl font-mono font-black text-white tabular-nums tracking-tighter">
+                                                    {miningBal.toFixed(6)} <span className="text-sm text-blue-500 font-sans">CTY</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="w-full bg-gray-800 h-1 rounded-full overflow-hidden mb-4">
+                                            <div className="h-full bg-gradient-to-r from-blue-500 to-purple-500 w-[60%] animate-[pulse_2s_infinite]"></div>
+                                        </div>
+
+                                        <div className="flex gap-3">
+                                            <div className="flex-1 bg-black/40 border border-white/10 rounded-lg p-2 flex items-center justify-between px-3">
+                                                <div className="flex items-center gap-2 text-gray-400 text-xs truncate">
+                                                    <Link size={12}/> <span className="truncate max-w-[150px] font-mono">{referralLink}</span>
+                                                </div>
+                                                <button className="text-blue-400 hover:text-white text-xs font-bold"><Copy size={12}/></button>
+                                            </div>
+                                            <button className="bg-gray-800 text-gray-500 text-[10px] px-4 py-2 rounded-lg font-bold cursor-not-allowed border border-gray-700 whitespace-nowrap">
+                                                Claim on Launch
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* WHITEPAPER */}
+                                <WhitepaperModule />
+
+                                {/* MODULES GRID */}
+                                <div className="grid grid-cols-2 gap-4">
+                                    {[
+                                        { name: "P2P Mall", icon: ShoppingBag, slogan: "Trade Goods", col: "pink" },
+                                        { name: "DeFi Trade", icon: TrendingUp, slogan: "Swap Crypto", col: "green" },
+                                        { name: "Game Center", icon: Gamepad2, slogan: "Play 2 Earn", col: "purple" },
+                                        { name: "Global Wallet", icon: Wallet, slogan: "Send CTY", col: "blue" }
+                                    ].map((m, i) => (
+                                        <div key={i} className="bg-[#0a0f1c] border border-white/5 p-4 rounded-2xl flex items-center gap-4 opacity-70 hover:opacity-100 hover:border-white/20 transition-all group cursor-default shadow-lg hover:shadow-blue-900/20">
+                                            <div className="bg-gray-900 p-3 rounded-xl group-hover:scale-110 transition-transform"><m.icon size={18} className={`text-${m.col}-400`}/></div>
+                                            <div>
+                                                <div className="font-bold text-gray-200 text-sm">{m.name}</div>
+                                                <div className="text-[9px] text-gray-500 uppercase font-bold tracking-wider">{m.slogan}</div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {/* SOCIAL LINKS */}
+                                <div className="flex gap-4 justify-center md:justify-start pt-4">
+                                    {SOCIAL_LINKS.map((s, i) => (
+                                        <a key={i} href={s.url} target="_blank" rel="noreferrer" className={`w-12 h-12 rounded-full bg-white/5 flex items-center justify-center text-gray-400 transition-all hover:scale-110 hover:bg-white/10 border border-white/5 ${s.color}`}>
+                                            <s.icon size={20} />
+                                        </a>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* RIGHT COLUMN: PROFILE */}
+                            <div className="h-[700px] animate-in slide-in-from-right duration-1000 delay-300">
+                                {!isConnected ? (
+                                    <div className="h-full glass-panel rounded-3xl p-8 flex flex-col items-center justify-center text-center relative overflow-hidden group border-dashed">
+                                        <div className="absolute inset-0 bg-black/60 z-10 backdrop-blur-[2px]"></div>
+                                        <div className="relative z-20 space-y-8">
+                                            <div className="w-24 h-24 bg-gray-800/50 rounded-full flex items-center justify-center mx-auto border border-gray-700 group-hover:border-blue-500 transition-colors shadow-[0_0_30px_rgba(0,0,0,0.5)]">
+                                                <Lock size={40} className="text-gray-500 group-hover:text-blue-400 transition-colors" />
+                                            </div>
+                                            <div>
+                                                <h2 className="text-2xl font-bold text-white mb-3">Web4 Profile Locked</h2>
+                                                <p className="text-gray-400 text-sm max-w-xs mx-auto leading-relaxed">
+                                                    Connect your wallet to unlock your decentralized identity, post to the chain, and customize your Web4 skin.
+                                                </p>
+                                            </div>
+                                            <button 
+                                                onClick={toggleWallet} 
+                                                className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-8 py-3 rounded-full text-sm flex items-center gap-2 mx-auto transition-all shadow-[0_0_20px_rgba(37,99,235,0.4)] hover:scale-105"
+                                            >
+                                                Unlock Access <ArrowRight size={16}/>
+                                            </button>
+                                        </div>
+                                        
+                                        <div className="absolute inset-0 opacity-10 pointer-events-none p-6">
+                                            <div className="flex gap-4 mb-8"><div className="w-16 h-16 bg-gray-500 rounded-full"></div><div className="space-y-2"><div className="w-32 h-4 bg-gray-500 rounded"></div><div className="w-24 h-3 bg-gray-500 rounded"></div></div></div>
+                                            <div className="space-y-4"><div className="h-24 bg-gray-500 rounded-xl"></div><div className="h-24 bg-gray-500 rounded-xl"></div></div>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <UserProfile address="0x71C...9A23" />
+                                )}
+                            </div>
+
+                        </div>
+                    </div>
+                    
+                    <div className="text-center text-[10px] text-gray-600 mt-20 pb-8 border-t border-white/5 pt-8">
+                        © 2025 CRYPTINITY WEB4 WORLD. All rights reserved.
+                    </div>
+                </div>
+            );
+        };
+
+        const root = createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
+
+
